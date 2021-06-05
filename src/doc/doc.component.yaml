@@ -1,0 +1,490 @@
+components:
+  schemas:
+    CreateAddress:
+      type: object
+      required:
+        - number
+        - street
+        - neighborhood
+        - city
+        - state
+      properties:
+        number:
+          type: string
+          description: Address's number
+        street:
+          type: string
+          description: street's name
+        neighborhood:
+          type: string
+          description: neighborhood's name
+        city:
+          type: string
+          description: city's name
+        state:
+          type: string
+          description: state's name
+        postalCode:
+          type: string
+          description: postalCode's name
+      example:
+        number: "6"
+        street: "102"
+        neighborhood: Maranguape II
+        city: Paulista
+        state: Pernambuco
+        postalCode: "53421491"
+
+    Address:
+      type: object
+      required:
+        - id
+        - number
+        - street
+        - neighborhood
+        - city
+        - state
+      properties:
+        id:
+          type: number
+          description: Auto-generate address's identifier
+        number:
+          type: string
+          description: Address's number
+        street:
+          type: string
+          description: street's name
+        neighborhood:
+          type: string
+          description: neighborhood's name
+        city:
+          type: string
+          description: city's name
+        state:
+          type: string
+          description: state's name
+        postalCode:
+          type: string
+          description: postalCode's name
+    
+      example:
+        id: 1
+        number: "6"
+        street: "102"
+        neighborhood: Maranguape II
+        city: Paulista
+        state: Pernambuco
+        postalCode: "53421491"
+    
+    CreateLaboratory:
+      type: object
+      required:
+        - name
+        - address
+      properties:
+        name:
+          type: string
+          description: Laboratory's name
+        address:
+          description: Laboratory's address
+          $ref: '#/components/schemas/CreateAddress'
+
+      example:
+        name: "USS Discovery"
+        address:
+          number: "6"
+          street: "102"
+          neighborhood: Maranguape II
+          city: Paulista
+          state: Pernambuco
+          postalCode: "53421491"
+    
+    CreateLaboratories:
+      type: object
+      required:
+        - laboratories
+      properties:
+        laboratories:
+          description: List of laboratory
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateLaboratory'
+    
+    Laboratory:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - address
+      properties:
+        id:
+          type: number
+          description: The auto-generate id of laboratory
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+          description: The laboratory status
+        name:
+          type: string
+          description: The laboratory name
+        address:
+          description: Laboratory's address
+          $ref: '#/components/schemas/Address'
+      
+      example:
+        id: 1
+        name: USS Discovery
+        status: ACTIVE
+        address:
+          id: 1
+          number: "6"
+          street: "102"
+          neighborhood: Maranguape II
+          city: Paulista
+          state: Pernambuco
+          postalCode: "53421491"
+
+    Laboratories:
+      type: object
+      required:
+        - laboratories
+      properties:
+        laboratories:
+          description: List of laboratories
+          type: array
+          items:
+            $ref: '#/components/schemas/Laboratory'
+
+    LaboratoriesToDelete:
+      type: object
+      required:
+        - laboratoriesId
+      properties:
+        laboratoriesId:
+          type: array
+          description: laboratories ids list to delete
+          items:
+            type: number
+      example:
+        laboratoriesId: [1, 2, 3]
+
+    LaboratoryWithoutIds:
+      type: object
+      description: Show laboratory and address without ids
+      required:
+        - status
+        - name
+        - address
+      properties:
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+          description: The laboratory status
+        name:
+          type: string
+          description: The laboratory name
+        address:
+          description: Laboratory's address
+          $ref: '#/components/schemas/Address'
+      example:
+        name: "USS Discovery"
+        status: ACTIVE
+        address:
+          number: "6"
+          street: "102"
+          neighborhood: Maranguape II
+          city: Paulista
+          state: Pernambuco
+          postalCode: "53421491"
+
+    LaboratoriesWithoutIds:
+      type: object
+      required:
+        - laboratories
+      properties:
+        laboratories:
+          type: array
+          description: List of laboratory without laboratory and address ids
+          items:
+            $ref: '#/components/schemas/LaboratoryWithoutIds'
+
+    LaboratoryToUpdate:
+      type: object
+      required:
+        - id
+        - data
+      properties:
+        id:
+          type: number
+          description: Laboratory identifier to update
+        data:
+          type: object
+          description: New laboratory's data
+          $ref: '#/components/schemas/LaboratoryWithoutIds'
+      example:
+        id: 1,
+        data:
+          name: "USS Discovery"
+          status: ACTIVE
+          address:
+            number: "6"
+            street: "102"
+            neighborhood: Maranguape II
+            city: Paulista
+            state: Pernambuco
+            postalCode: "53421491"
+      
+    LaboratoriesToUpdate:
+      type: object
+      required:
+        - laboratories
+      properties:
+        laboratories:
+          type: array
+          description: List of laboratories to update
+          items:
+            $ref: '#/components/schemas/LaboratoryToUpdate'
+
+    CreateExam:
+      type: object
+      required: 
+        - name
+        - type
+        - laboratoriesId
+      properties:
+        name:
+            type: string
+            description: Name of exam
+        type:
+            type: string
+            description: Exam's type
+            enum: [CLINICAL_ANALYSIS, IMAGE]
+        laboratoriesId:
+            type: array
+            items:
+               type: number
+      example:
+        name: Exame de sangue
+        type: 'IMAGE'
+        laboratoriesId: [1, 2, 3]
+
+    CreateExams:
+      type: object
+      required:
+        - exams
+      properties:
+        exams:
+          type: array
+          description: List of exams to create
+          items:
+            $ref: '#/components/schemas/CreateExam'
+
+    Exam:
+      type: object
+      required:
+        - id
+        - name
+        - status
+        - type
+        - laboratories
+      properties:
+        id:
+          type: string
+          description: Auto generated exam's identifier
+        name:
+          type: string
+          description: Exam's name
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+          description: Exam's status
+        type:
+          type: string
+          enum: [CLINICAL_ANALYSIS, IMAGE]
+          description: Kind of exams
+        laboratories:
+          type: array
+          description: List of laboratories
+          items: 
+            $ref: '#/components/schemas/Laboratories'
+      example:
+        id: 1
+        name: Exame de sangue
+        status: ACTIVE
+        type: CLINICAL_ANALYSIS
+        laboratories:
+          - id: 1
+            name: USS Discovery
+            status: ACTIVE
+            address:
+              id: 1
+              number: "6"
+              street: "102"
+              neighborhood: Maranguape II
+              city: Paulista
+              state: Pernambuco
+    
+    Exams:
+      type: object
+      required:
+        - exams
+      properties:
+        exams:
+          type: array
+          description: "List of exams"
+          items:
+            $ref: '#/components/schemas/Exam'
+
+    ExamsToDelete:
+      type: object
+      required: 
+        - examsId
+      properties:
+        examsId:
+          type: array
+          description: Exams ids list to delete
+          items:
+            type: number
+      example:
+        examsId: [1, 2, 3]
+
+    ExamWithoutId:
+      type: object
+      required:
+        - name
+        - status
+        - type
+        - laboratories
+      properties:
+        name:
+          type: string
+          description: Exam's name
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+          description: Exam's status
+        type:
+          type: string
+          enum: [CLINICAL_ANALYSIS, IMAGE]
+          description: Kind of exams
+        laboratories:
+          type: array
+          description: List of laboratories
+          items: 
+            $ref: '#/components/schemas/Laboratories'
+      example:
+        name: Exame de sangue
+        status: ACTIVE
+        type: CLINICAL_ANALYSIS
+        laboratories: []
+    
+    ExamsWithoutId:
+      type: object
+      required:
+        - exams
+      properties:
+        exams:
+          type: array
+          description: List of Exams id empty laboratories list
+          items:
+            $ref: '#/components/schemas/ExamWithoutId'
+
+    GetLaboratoriesByExamName:
+      type: object
+      required:
+        - examName
+      properties:
+        examName:
+          type: string
+      example:
+        examName: Exame de sangue
+    
+    AssociateAExamWithANewLaboratory:
+      type: object
+      required:
+        - examId
+        - laboratoryId
+      properties:
+        examId:
+          type: number
+          description: Exam's identifier
+        laboratoryId:
+          type: number
+          description: Laboratory's identifier
+      example:
+        examId: 1
+        laboratoryId: 1
+    
+    DisassociateAExamWithANewLaboratory:
+      type: object
+      required:
+        - examId
+        - laboratoryId
+      properties:
+        examId:
+          type: number
+          description: Exam's identifier
+        laboratoryId:
+          type: number
+          description: Laboratory's identifier
+      example:
+        examId: 1
+        laboratoryId: 1
+
+    ExamWithoutIdAndLaboratory:
+      type: object
+      required:
+        - name
+        - status
+        - type
+      properties:
+        name:
+          type: string
+          description: Exam's name
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+          description: Exam's status
+        type:
+          type: string
+          enum: [CLINICAL_ANALYSIS, IMAGE]
+          description: Kind of exams
+      example:
+        name: Exame de sangue
+        status: ACTIVE
+        type: CLINICAL_ANALYSIS
+
+    ExamToUpdate:
+      type: object
+      required:
+        - id
+        - data:
+      properties:
+        id:
+          type: number
+          description: Exam's identifier to update
+        data:
+          type: object
+          description: New exam's values to update
+          $ref: '#/components/schemas/ExamWithoutIdAndLaboratory'
+      example:
+        id: 1
+        data:
+          name: Exame de sangue
+          status: ACTIVE
+          type: CLINICAL_ANALYSIS
+    
+    ExamsToUpdate:
+      type: object
+      required:
+        - exams
+      properties:
+        exams:
+          type: array
+          description: List of exams to update
+          items:
+            $ref: '#/components/schemas/ExamToUpdate'
+
+          
+      
